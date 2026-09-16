@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI 업무지원 시스템 · 월간현황 보고</title>
+<style>
+
+  :root{
+    --navy:#0d2340; --navy2:#1a3a5c; --navy3:#25517d;
+    --gold:#c1a15a; --gold-d:#a8863c; --gold-l:#e8dcbd;
+    --ink:#20303f; --muted:#63788c; --line:#e2e8ef;
+    --bg:#eef1f5; --card:#ffffff;
+    --svc-gen:#25517d; --svc-work:#c1a15a; --svc-mine:#2f8f6d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.6; padding:28px 16px;
+    -webkit-font-smoothing:antialiased;}
+  .page{max-width:1080px; margin:0 auto;}
+
+  .doc-head{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%); color:#fff;
+    border-radius:14px 14px 0 0; padding:26px 32px 22px; position:relative; overflow:hidden;}
+  .doc-head::after{content:""; position:absolute; right:-40px; top:-40px; width:180px; height:180px;
+    background:radial-gradient(circle,rgba(193,161,90,.28),transparent 70%);}
+  .doc-head .tagline{font-size:12px; letter-spacing:3px; color:var(--gold-l); font-weight:600;}
+  .doc-head h1{font-size:27px; font-weight:800; margin:8px 0 4px; letter-spacing:-.5px;}
+  .doc-head h1 b{color:var(--gold);}
+  .doc-sub{font-size:13px; color:#c8d6e6;}
+  .meta-row{display:flex; gap:26px; margin-top:16px; padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.16); flex-wrap:wrap;}
+  .meta-row div{font-size:12.5px; color:#d3dfec;} .meta-row b{color:#fff; font-weight:700;}
+  .print-btn{position:absolute; top:22px; right:26px; z-index:5; display:inline-flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.35);
+    padding:8px 15px; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;
+    font-family:inherit; backdrop-filter:blur(2px); transition:background .15s,border-color .15s;}
+  .print-btn:hover{background:var(--gold); border-color:var(--gold); color:var(--navy);}
+  .print-btn svg{width:15px; height:15px;}
+  .rep-goldbar{height:4px; background:linear-gradient(90deg,var(--gold),var(--gold-d));}
+
+  .summary{background:var(--card); border:1px solid var(--line); border-left:5px solid var(--gold);
+    border-radius:8px; padding:18px 22px; margin:18px 0; box-shadow:0 1px 3px rgba(13,35,64,.05);}
+  .summary h2{font-size:14px; color:var(--navy); margin-bottom:10px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .summary h2::before{content:"■"; color:var(--gold); font-size:11px;}
+  .summary ul{list-style:none;}
+  .summary li{padding:4px 0 4px 20px; position:relative; font-size:13.5px;}
+  .summary li::before{content:""; position:absolute; left:2px; top:12px; width:7px; height:7px; background:var(--navy3); border-radius:50%;}
+  .summary li b{color:var(--navy); background:linear-gradient(transparent 62%,var(--gold-l) 62%);}
+
+  .kpi-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:18px 0;}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 14px;
+    text-align:center; box-shadow:0 1px 3px rgba(13,35,64,.05); position:relative; overflow:hidden;}
+  .kpi::before{content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--navy2),var(--gold));}
+  .kpi .lbl{font-size:11.5px; color:var(--muted); font-weight:600; margin-bottom:6px;}
+  .kpi .val{font-size:25px; font-weight:800; color:var(--navy); line-height:1;}
+  .kpi .val small{font-size:13px; font-weight:700; color:var(--navy3); margin-left:1px;}
+  .kpi .sub{font-size:11px; color:var(--muted); margin-top:6px;} .kpi .sub b{color:var(--gold-d);}
+
+  .section{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:22px 24px;
+    margin:16px 0; box-shadow:0 1px 3px rgba(13,35,64,.05);}
+  .sec-title{font-size:16px; font-weight:800; color:var(--navy); margin-bottom:4px; display:flex; align-items:center; gap:9px;}
+  .sec-num{display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;
+    background:var(--navy); color:var(--gold); border-radius:6px; font-size:13px; font-weight:800;}
+  .sec-desc{font-size:12.5px; color:var(--muted); margin:2px 0 16px 33px;}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  .subhead{font-size:13px; font-weight:800; color:var(--navy2); margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid var(--gold-l);}
+
+  .splitbar{height:34px; border-radius:6px; overflow:hidden; display:flex; margin:6px 0 12px; box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);}
+  .splitbar .seg{display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; white-space:nowrap;}
+  .legend{display:flex; gap:18px; font-size:12px; color:var(--muted); margin-top:4px; flex-wrap:wrap;}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:11px; height:11px; border-radius:3px; display:inline-block;}
+
+  .barlist{display:flex; flex-direction:column; gap:9px;}
+  .barrow{display:grid; grid-template-columns:130px 1fr 60px; align-items:center; gap:10px;}
+  .barrow .nm{font-size:12.5px; color:var(--ink); font-weight:600; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .track{background:#eef2f6; border-radius:4px; height:20px; overflow:hidden;}
+  .fill{height:100%; border-radius:4px; display:flex; align-items:center; background:linear-gradient(90deg,var(--navy3),var(--navy2));}
+  .barrow .vv{font-size:12px; font-weight:700; color:var(--navy); text-align:left;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:4px;}
+  thead th{background:var(--navy); color:#fff; padding:9px 8px; font-weight:700; text-align:center; border:none; font-size:12px;}
+  thead th:first-child{border-radius:6px 0 0 0;} thead th:last-child{border-radius:0 6px 0 0;}
+  tbody td{padding:8px; border-bottom:1px solid var(--line); text-align:center; color:var(--ink);}
+  tbody tr:nth-child(even){background:#f7f9fb;}
+  tbody td.nm{text-align:left; font-weight:700; color:var(--navy2);}
+  tbody td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  tbody tr.hl{background:var(--gold-l)!important;} tbody tr.hl td{font-weight:700;}
+  tbody tr.total-row{background:#eef2f6!important; border-top:2px solid var(--navy2);}
+  tbody tr.total-row td{font-weight:800; color:var(--navy);}
+  .rate-pill{display:inline-block; padding:2px 8px; border-radius:11px; font-size:11px; font-weight:700; background:#e8f0f8; color:var(--navy3);}
+  .rate-pill.hi{background:#e7f4ec; color:#1f8a53;} .rate-pill.lo{background:#fbecec; color:#c0554a;}
+
+  /* Venn */
+  .venn-wrap{text-align:center;}
+  .venn-cap{display:flex; justify-content:center; gap:26px; margin-top:2px; font-size:12px;}
+  .venn-cap b{font-size:15px; font-weight:800;}
+  .venn-cap .c1 b{color:var(--navy3);} .venn-cap .c2 b{color:var(--gold-d);}
+
+  .model-wrap{display:grid; grid-template-columns:160px 1fr; gap:18px; align-items:center;}
+  .model-list{display:flex; flex-direction:column; gap:11px;}
+  .model-item{display:flex; align-items:center; gap:10px; font-size:12.5px;}
+  .model-item .mdot{width:12px; height:12px; border-radius:3px;}
+  .model-item .mnm{font-weight:700; color:var(--ink); flex:1;}
+  .model-item .mval{font-weight:800; color:var(--navy);}
+  .model-item .mpct{color:var(--muted); font-size:11.5px; width:46px; text-align:right;}
+
+  /* service bar chart (image-2 style) */
+  .svc-legend{display:flex; gap:16px; justify-content:flex-end; font-size:11.5px; color:var(--muted); margin-bottom:14px;}
+  .svc-legend span{display:flex; align-items:center; gap:6px;}
+  .svc-bars{display:flex; flex-direction:column; gap:16px;}
+  .svc-row .svc-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .svc-nm{font-size:13.5px; font-weight:700; color:var(--ink);}
+  .svc-pct{font-size:13.5px; font-weight:800; color:var(--navy);}
+  .svc-track{height:22px; background:#eef2f6; border-radius:5px; overflow:hidden; display:flex;}
+  .svc-seg{height:100%;}
+
+  /* question-type ranking */
+  .qrank{display:flex; flex-direction:column; gap:7px;}
+  .qrow{display:grid; grid-template-columns:20px 118px 1fr 74px; align-items:center; gap:9px;}
+  .qrow .qn{width:20px; height:20px; border-radius:5px; background:var(--navy); color:var(--gold); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center;}
+  .qrow .qnm{font-size:12.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .qrow .qtrack{background:#eef2f6; border-radius:4px; height:16px; overflow:hidden;}
+  .qrow .qfill{height:100%; border-radius:4px; background:linear-gradient(90deg,var(--navy3),var(--navy2));}
+  .qrow .qv{font-size:11.5px; font-weight:700; color:var(--navy); text-align:right;}
+  .qrow .qv em{font-style:normal; color:var(--muted); font-weight:600; font-size:10.5px; margin-left:4px;}
+
+  .insight{background:linear-gradient(135deg,#f7f4ec,#fbf9f3); border:1px solid var(--gold-l); border-radius:10px; padding:20px 24px; margin:16px 0;}
+  .insight-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;}
+  .icard{background:#fff; border:1px solid var(--line); border-radius:8px; padding:14px 16px;}
+  .icard .ic-h{font-size:13px; font-weight:800; color:var(--navy); margin-bottom:6px; display:flex; align-items:center; gap:7px;}
+  .icard .ic-h .tag{font-size:10px; background:var(--navy); color:var(--gold); padding:1px 7px; border-radius:10px; font-weight:700;}
+  .icard p{font-size:12.5px; color:var(--ink); line-height:1.55;} .icard p b{color:var(--gold-d);}
+
+  /* ===== 리텐션(사용자 이동) 섹션 ===== */
+  .ret-kpi{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:6px 0 4px;}
+  .ret-card{border-radius:10px; padding:16px 16px; text-align:center; color:#fff; position:relative; overflow:hidden;}
+  .ret-card.ret{background:linear-gradient(135deg,#1a3a5c,#25517d);}
+  .ret-card.new{background:linear-gradient(135deg,#a8863c,#c1a15a);}
+  .ret-card.churn{background:linear-gradient(135deg,#8a97a5,#63788c);}
+  .ret-card .rc-lbl{font-size:12px; font-weight:700; opacity:.92; margin-bottom:6px; letter-spacing:.3px;}
+  .ret-card .rc-val{font-size:28px; font-weight:800; line-height:1;}
+  .ret-card .rc-val small{font-size:14px; font-weight:700; margin-left:2px;}
+  .ret-card .rc-sub{font-size:11.5px; opacity:.9; margin-top:7px;}
+  .ret-flow-cap{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px; padding:0 4px;}
+  .ret-flow-cap b{color:var(--navy); font-weight:800; font-size:13px;}
+
+  .footnote{font-size:11px; color:var(--muted); margin-top:18px; padding:12px 4px; border-top:1px solid var(--line); line-height:1.5;}
+  .footnote b{color:var(--navy3);}
+
+  /* ===== 반응형: 화면 폭에 따른 재배치 ===== */
+  @media (max-width:1000px){
+    .kpi-grid{grid-template-columns:repeat(3,1fr);}
+    .cols{grid-template-columns:1fr;}
+    .insight-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:720px){
+    body{padding:16px 10px;}
+    .page{max-width:100%;}
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .cols{grid-template-columns:1fr;}
+    .insight-grid{grid-template-columns:1fr;}
+    .model-wrap{grid-template-columns:1fr;}
+    .ret-kpi{grid-template-columns:1fr;}
+    .barrow{grid-template-columns:96px 1fr 48px;}
+    .qrow{grid-template-columns:18px 92px 1fr 60px;}
+    .doc-head{padding:20px 18px 16px;}
+    .doc-head h1{font-size:22px;}
+    /* 넓은 표는 가로 스크롤 허용 */
+    .section{overflow-x:auto;}
+  }
+  @media (max-width:480px){
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .barrow{grid-template-columns:78px 1fr 42px; gap:6px;}
+    .qrow{grid-template-columns:16px 74px 1fr 52px; gap:5px;}
+    .meta-row{gap:14px;}
+  }
+  @media print{
+    /* A4 세로(portrait) 기준 — 넓은 대시보드를 세로 폭에 맞게 재배치 */
+    @page{ size:A4 portrait; margin:8mm; }
+
+    /* ★ 핵심: 전체를 실제 인쇄 폭에 맞게 균일 축소(zoom).
+       zoom 은 transform:scale 과 달리 레이아웃·페이지 나눔이 정상 동작하여
+       모든 요소(고정폭 SVG·표·그리드 포함)가 함께 비율로 줄어듭니다. */
+    html{ zoom:0.86; }
+    html,body{ background:#fff !important; padding:0 !important; margin:0 !important; }
+    body{ font-size:11px; }
+    .page{ max-width:100% !important; width:100% !important; margin:0 !important; }
+    .print-btn{ display:none !important; }
+
+    /* 인쇄 시 배경색/그래프 색상 유지 */
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    .section,.kpi,.summary,.insight,.doc-head,.ret-card{ box-shadow:none !important; }
+    .doc-head{ border-radius:0; padding:18px 22px 16px; }
+    .doc-head h1{ font-size:22px; }
+
+    /* ★ 모든 SVG/이미지를 컨테이너 폭에 100% 맞춤(고정폭 제거) */
+    svg, img{ width:100% !important; max-width:100% !important; height:auto !important; }
+    /* 파이차트처럼 flex:none 으로 고정된 도표도 유연하게 */
+    svg[style*="flex:none"]{ flex:1 1 auto !important; max-width:150px !important; }
+
+    /* KPI: 세로 폭에 맞게 6열 → 3열 2행 */
+    .kpi-grid{ grid-template-columns:repeat(3,1fr) !important; gap:8px; }
+    .kpi{ padding:12px 10px; min-width:0; }
+    .kpi .val{ font-size:20px; }
+
+    /* 2단 비교 레이아웃은 세로에서 폭이 좁아 1단으로 전환 */
+    .cols{ grid-template-columns:1fr !important; gap:16px; }
+    .cols > div{ min-width:0 !important; width:100% !important; }
+    .insight-grid{ grid-template-columns:1fr 1fr !important; }
+    .model-wrap{ grid-template-columns:130px 1fr !important; }
+    .ret-kpi{ grid-template-columns:repeat(3,1fr) !important; }
+
+    /* 고정폭 그리드(막대·질문 랭킹)를 유연 폭으로 재조정 */
+    .barrow{ grid-template-columns:minmax(70px,100px) 1fr minmax(40px,54px) !important; gap:8px !important; }
+    .qrow{ grid-template-columns:18px minmax(70px,100px) 1fr minmax(48px,62px) !important; gap:6px !important; }
+    .qrow .qnm, .barrow .nm, .svc-nm{ min-width:0; }
+
+    /* 넓은 본부별 표(9열)를 세로 폭에 맞게 자동 축소 */
+    table{ font-size:9px; width:100% !important; table-layout:fixed; }
+    th,td{ word-break:keep-all; overflow-wrap:break-word; }
+    thead th{ padding:5px 3px; font-size:8.5px; }
+    thead tr.subhead-row th{ padding:3px 2px; font-size:8px; }
+    tbody td{ padding:4px 3px; }
+
+    /* 카드·표·행이 페이지 경계에서 잘리지 않도록 */
+    .section,.summary,.insight,.kpi,.icard,.barrow,.svc-row,.qrow,.model-item,
+    .cols > div,table,thead,tbody,tr,td,th,svg,.ret-card,.ret-kpi{ break-inside:avoid; page-break-inside:avoid; }
+    .sec-title,.subhead,.summary h2{ break-after:avoid; page-break-after:avoid; }
+
+    /* 여백 축소로 페이지 수 최소화 */
+    .section{ margin:9px 0; padding:14px 16px; }
+    .kpi-grid,.summary{ margin:10px 0; }
+  }
+
+  thead tr.subhead-row th{background:var(--navy2);padding:6px 5px;font-size:11px;border-top:1px solid rgba(255,255,255,.18);}
+  thead th.group-end, tbody td.group-end{border-right:1px solid #cfd8e2;}
+  .delta-up{color:#c0554a;font-weight:800;} .delta-down{color:#25517d;font-weight:800;}
+
+
+  /* ===== 보고월 선택 UI ===== */
+  .month-picker{display:inline-flex; align-items:center; gap:8px;}
+  .month-picker label{font-size:12.5px; color:#d3dfec;}
+  .month-picker select{
+    font-family:inherit; font-size:13px; font-weight:700; color:var(--navy);
+    background:#fff; border:1px solid var(--gold); border-radius:7px;
+    padding:6px 30px 6px 12px; cursor:pointer; appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a8863c' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat; background-position:right 10px center;
+    box-shadow:0 1px 4px rgba(0,0,0,.15);}
+  .month-picker select:focus{outline:none; border-color:var(--gold-l); box-shadow:0 0 0 3px rgba(193,161,90,.35);}
+  .month-nav{display:inline-flex; gap:4px; margin-left:2px;}
+  .month-nav button{
+    width:30px; height:30px; border-radius:7px; cursor:pointer;
+    background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.35);
+    font-size:15px; font-weight:800; line-height:1; font-family:inherit; transition:background .15s;}
+  .month-nav button:hover:not(:disabled){background:var(--gold); border-color:var(--gold); color:var(--navy);}
+  .month-nav button:disabled{opacity:.35; cursor:not-allowed;}
+
+</style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_xad6c__xbd84_ msdt:dt="string">AI</mso:_xad6c__xbd84_>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+<div class="page">
+  <!-- ===== 문서 헤더 (보고월 선택 포함) ===== -->
+  <div class="doc-head">
+    <button class="print-btn" onclick="window.print()" title="PDF 저장 / 인쇄" type="button">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect height="8" width="12" x="6" y="14"></rect></svg>PDF / 인쇄
+    </button>
+    <div class="tagline">HYUNDAI E&amp;C · AX PLATFORM TEAM</div>
+    <h1>AI 활용 <b>현황 보고</b></h1>
+    <div class="doc-sub">전사 생성형 AI 활용 현황 종합 리포트 (HAI 플랫폼 &amp; Microsoft Copilot)</div>
+    <div class="meta-row">
+      <div class="month-picker">
+        <label for="monthSelect">보고월</label>
+        <select id="monthSelect" onchange="renderReport(this.value)"></select>
+        <span class="month-nav">
+          <button id="prevBtn" type="button" title="이전 달" onclick="stepMonth(1)">&#8249;</button>
+          <button id="nextBtn" type="button" title="다음 달" onclick="stepMonth(-1)">&#8250;</button>
+        </span>
+      </div>
+      <div>활성 기준&nbsp;&nbsp;<b>월 10건 이상</b></div>
+      <div>작성&nbsp;&nbsp;<b>AX플랫폼팀</b></div>
+    </div>
+  </div>
+  <div class="rep-goldbar"></div>
+
+  <!-- ===== 보고월별 내용이 렌더링되는 영역 ===== -->
+  <div id="report-root"></div>
+</div>
+
+<script>
+/* =========================================================================
+   보고 데이터 저장소
+   -------------------------------------------------------------------------
+   ★ 새 보고월 추가 방법 ★
+   아래 REPORTS 객체에 "2026-09": { ... } 형태로 블록 하나만 추가하면
+   상단 드롭다운에 자동으로 나타나고 모든 표·차트·KPI가 자동 생성됩니다.
+   ※ retention(사용자 이동) 섹션은 값이 있는 달에만 표시됩니다(선택 항목).
+   ========================================================================= */
+const REPORTS = {
+  "2026-07": {
+    label: "2026년 7월",
+    summary: [
+      "7월 전사 AI 총 활용량 <b>579,271건</b>으로 전월(456,132건) 대비 <b>123,139건 증가(1.27배)</b>, 활성 사용자(월 10건 이상) <b>4,264명</b>으로 사용량·사용자 모두 증가세 지속.",
+      "<b>구 AI비서가 6/30부로 종료</b>되어 7월 사용량은 전량 소멸, 해당 수요가 Copilot과 HAI로 분산 — 플랫폼 비중이 <b>Copilot 89.3% · HAI 10.7%</b>로 재편(6월 Copilot 82.9%)."
+    ],
+    kpi: {
+      totalUsage: 579271, avgPerPerson: "103.7",
+      totalUsers: 5587, activeUsers: 4264,
+      haiQueries: 62228, haiDaily: 2007,
+      copilotUsage: 517043, copilotDaily: 16679,
+      cost: "5.10", costDelta: "0.40",
+      powerUsers: 1694, powerUserPct: "30.3"
+    },
+    toolShare: { copilot: {pct:89.3, count:517043}, hai: {pct:10.7, count:62228} },
+    venn: { copilotTotal:4463, haiTotal:2459, copilotOnly:3128, both:1335, haiOnly:1124, totalUsers:5587 },
+    costTrend: [
+      {month:"6월", chat:3538994, doctrans:864467,  minutes:306279, total:4709740},
+      {month:"7월", chat:2723012, doctrans:1944603, minutes:436997, total:5104612}
+    ],
+    dept: [
+      {name:"토목",     head:2783, uPrev:874,  uCur:975,  gPrev:66157,  gCur:96896,  aPrev:"23.9", aCur:"34.8", delta:"+10.9"},
+      {name:"건축주택", head:3240, uPrev:1569, uCur:1648, gPrev:65476,  gCur:84056,  aPrev:"20.1", aCur:"25.9", delta:"+5.8"},
+      {name:"플랜트",   head:2728, uPrev:1227, uCur:1310, gPrev:139956, gCur:172744, aPrev:"49.1", aCur:"63.3", delta:"+14.2", hl:true},
+      {name:"뉴에너지", head:814,  uPrev:397,  uCur:404,  gPrev:70256,  gCur:80249,  aPrev:"86.5", aCur:"98.6", delta:"+12.1"},
+      {name:"안전품질", head:379,  uPrev:200,  uCur:200,  gPrev:15457,  gCur:19506,  aPrev:"40.8", aCur:"51.5", delta:"+10.7"},
+      {name:"PI",       head:132,  uPrev:115,  uCur:116,  gPrev:11663,  gCur:15366,  aPrev:"87.7", aCur:"116.4", delta:"+28.7"},
+      {name:"재경",     head:190,  uPrev:159,  uCur:161,  gPrev:15861,  gCur:20471,  aPrev:"84.3", aCur:"107.7", delta:"+23.4"},
+      {name:"경영지원", head:221,  uPrev:162,  uCur:165,  gPrev:20599,  gCur:25739,  aPrev:"92.4", aCur:"116.5", delta:"+24.1"},
+      {name:"기타",     head:1013, uPrev:596,  uCur:608,  gPrev:50887,  gCur:64244,  aPrev:"68.3", aCur:"63.4", delta:"-4.9"}
+    ],
+    deptTotal: {name:"합계", head:11500, uPrev:5299, uCur:5587, gPrev:456312, gCur:579271, aPrev:"39.7", aCur:"50.4", delta:"+10.7"},
+    deptNote: "· <b>최대 활용 본부</b> : 플랜트사업본부 (총 사용량 기준), 경영지원본부 (인당 평균 사용량 기준).",
+    serviceTypes: {
+      total: 579271,
+      rows: [
+        {name:"일반 챗봇",  pct:"96.9", segs:[{w:89.3, c:"#25517d"},{w:7.6, c:"#e0607a"}]},
+        {name:"사내 업무",  pct:"2.0",  segs:[{w:1.96, c:"#e0607a"}]},
+        {name:"나만의 비서", pct:"1.2",  segs:[{w:1.19, c:"#e0607a"}]}
+      ],
+      note: "· 일반 챗봇 <b>561,012건(96.9%)</b> = 코파일럿 517,043 + HAI 일반챗봇 43,969. 사내 업무 11,345건 · 나만의 비서 6,914건.<br/>· HAI : 일반챗봇 70.7% · <b>사내 업무 18.2% · 나만의 비서 11.1%</b>"
+    },
+    agentTop: [
+      {name:"번역 전문가", v:4158}, {name:"HMAP(규정/지침)", v:1458},
+      {name:"이메일 작성", v:1353}, {name:"건축/주택 정보 검색", v:915},
+      {name:"엑셀전문가", v:883}, {name:"신입사원 도우미", v:771},
+      {name:"계약파트비서", v:659}, {name:"업무지원 가이드", v:423}
+    ],
+    agentNote: "번역·규정검색·문서작성 등 <b>반복·조회성 업무</b>에 활용이 집중되며, 특히 <b>번역 전문가(4,158건)</b> 비서가 상위 8종의 절반 이상을 차지해 편중이 뚜렷합니다.",
+    haiDailyLabel: "7",
+    haiDailyPeak: {day:"7/9", value:3213},
+    haiDaily: [3115,3178,2775,722,210,3021,3115,3152,3213,2454,753,166,2788,2522,2710,2153,890,671,114,2657,2603,2722,2709,2064,774,188,2544,2357,2040,2209,1638],
+    haiDailyNote: "일평균 <b>2,007건</b> 수준으로, 평일 집중·주말 급감의 전형적 업무 활용 패턴을 보입니다.",
+    intensity: [
+      {name:"비활성 (1~9건)", users:1323, count:5158,   c:"#c2cdd8"},
+      {name:"일반 (10~49)",   users:1637, count:41933},
+      {name:"적극 (50~99)",   users:933,  count:67112},
+      {name:"파워 (100~299)", users:1183, count:202156, c:"linear-gradient(90deg,#a8863c,#c1a15a)"},
+      {name:"헤비 (300건↑)",  users:511,  count:262912, c:"linear-gradient(90deg,#8a6a2c,#a8863c)"}
+    ],
+    intensityNote: "300건 이상 <b>헤비 유저 511명(9.1%)</b>이 <b>262,912건</b> 사용 (전체 사용량의 <b>45.4%</b>). 소수 핵심층에 활용이 집중되어 있습니다.",
+    questionTop: [
+      {name:"번역", v:5526, pct:"8.9"}, {name:"문서·이메일 작성", v:4752, pct:"7.6"},
+      {name:"용어·개념 설명", v:4611, pct:"7.4"}, {name:"설계·시공·기술", v:3426, pct:"5.5"},
+      {name:"규정·계약·법무", v:2341, pct:"3.8"}
+    ]
+  },
+
+  "2026-08": {
+    label: "2026년 8월",
+    summary: [
+      "8월 전사 AI 총 활용량 <b>694,793건</b>으로 전월(579,271건) 대비 <b>115,522건 증가(1.20배)</b>, 활성 사용자(월 10건 이상) <b>4,637명</b>으로 사용량·사용자 모두 증가세 지속.",
+      "<b>Copilot 활용이 648,199건으로 급증</b>하며 플랫폼 비중이 <b>Copilot 93.3% · HAI 6.7%</b>로 재편(7월 Copilot 89.3%). HAI 질의는 46,594건으로 전월 대비 감소했으나 <b>업무 특화 비서 비중은 18.2%→19.9%로 상승</b>."
+    ],
+    kpi: {
+      totalUsage: 694793, avgPerPerson: "116.5",
+      totalUsers: 5966, activeUsers: 4637,
+      haiQueries: 46594, haiDaily: 1503,
+      copilotUsage: 648199, copilotDaily: 20910,
+      cost: "6.02", costDelta: "0.92",
+      powerUsers: 1953, powerUserPct: "32.7"
+    },
+    toolShare: { copilot: {pct:93.3, count:648199}, hai: {pct:6.7, count:46594} },
+    venn: { copilotTotal:4897, haiTotal:2259, copilotOnly:3707, both:1190, haiOnly:1069, totalUsers:5966 },
+    costTrend: [
+      {month:"6월", chat:3538994, doctrans:864467,  minutes:306279, total:4709740},
+      {month:"7월", chat:2723012, doctrans:1944603, minutes:436997, total:5104612},
+      {month:"8월", chat:1996518, doctrans:3459400, minutes:565100, total:6021018}
+    ],
+    dept: [
+      {name:"토목",     head:2779, uPrev:975,  uCur:1076, gPrev:96896,  gCur:113456, aPrev:"34.8",  aCur:"40.8",  delta:"+6.0"},
+      {name:"건축주택", head:3222, uPrev:1648, uCur:1755, gPrev:84056,  gCur:109251, aPrev:"25.9",  aCur:"33.9",  delta:"+8.0"},
+      {name:"플랜트",   head:2739, uPrev:1310, uCur:1361, gPrev:172744, gCur:204102, aPrev:"63.3",  aCur:"74.5",  delta:"+11.2", hl:true},
+      {name:"뉴에너지", head:808,  uPrev:404,  uCur:411,  gPrev:80249,  gCur:92104,  aPrev:"98.6",  aCur:"114.0", delta:"+15.4"},
+      {name:"안전품질", head:378,  uPrev:200,  uCur:209,  gPrev:19506,  gCur:21320,  aPrev:"51.5",  aCur:"56.4",  delta:"+4.9"},
+      {name:"PI",       head:131,  uPrev:116,  uCur:116,  gPrev:15366,  gCur:15338,  aPrev:"116.4", aCur:"117.1", delta:"+0.7"},
+      {name:"재경",     head:191,  uPrev:161,  uCur:168,  gPrev:20471,  gCur:28020,  aPrev:"107.7", aCur:"146.7", delta:"+39.0"},
+      {name:"경영지원", head:218,  uPrev:165,  uCur:172,  gPrev:25739,  gCur:31517,  aPrev:"116.5", aCur:"144.6", delta:"+28.1"},
+      {name:"기타",     head:808,  uPrev:608,  uCur:698,  gPrev:64244,  gCur:79685,  aPrev:"63.4",  aCur:"98.6",  delta:"+35.2"}
+    ],
+    deptTotal: {name:"합계", head:11274, uPrev:5587, uCur:5966, gPrev:579271, gCur:694793, aPrev:"50.4", aCur:"61.6", delta:"+11.2"},
+    deptNote: "· <b>최대 활용 본부</b> : 플랜트사업본부 (총 사용량 기준), 재경본부 (인당 평균 사용량 기준).",
+    serviceTypes: {
+      total: 694793,
+      rows: [
+        {name:"일반 챗봇",  pct:"98.2", segs:[{w:93.29, c:"#25517d"},{w:4.88, c:"#e0607a"}]},
+        {name:"사내 업무",  pct:"1.3",  segs:[{w:1.33, c:"#e0607a"}]},
+        {name:"나만의 비서", pct:"0.5",  segs:[{w:0.50, c:"#e0607a"}]}
+      ],
+      note: "· 일반 챗봇 <b>682,089건(98.2%)</b> = 코파일럿 648,199 + HAI 일반챗봇 33,890. 사내 업무 9,260건 · 나만의 비서 3,444건.<br/>· HAI : 일반챗봇 72.7% · <b>사내 업무 19.9% · 나만의 비서 7.4%</b>"
+    },
+    agentTop: [
+      {name:"번역 전문가", v:2097}, {name:"HMAP(규정/지침)", v:1165},
+      {name:"이메일 작성", v:1141}, {name:"신입사원 도우미", v:720},
+      {name:"안전보건챗봇", v:700}, {name:"엑셀전문가", v:686},
+      {name:"건축/주택 정보 검색", v:680}, {name:"내용 요약/확장", v:605}
+    ],
+    agentNote: "번역·규정검색·문서작성 등 <b>반복·조회성 업무</b>에 활용이 집중되며, 특히 <b>번역 전문가(2,097건)·HMAP 규정검색(1,165건)·이메일 작성(1,141건)</b>이 상위 8종의 핵심을 이룹니다.",
+    haiDailyLabel: "8",
+    haiDailyPeak: {day:"8/10", value:2934},
+    haiDaily: [740,102,2200,2412,2283,2624,2113,729,165,2934,2575,2178,2158,1827,427,92,659,1867,2333,2093,2082,690,88,1928,1826,1780,1786,1286,417,87,2113],
+    haiDailyNote: "일평균 <b>1,503건</b> 수준으로, 평일 집중·주말 급감의 전형적 업무 활용 패턴을 보입니다.",
+    intensity: [
+      {name:"비활성 (1~9건)", users:1329, count:5134,   c:"#c2cdd8"},
+      {name:"일반 (10~49)",   users:1696, count:44147},
+      {name:"적극 (50~99)",   users:988,  count:71222},
+      {name:"파워 (100~299)", users:1331, count:233914, c:"linear-gradient(90deg,#a8863c,#c1a15a)"},
+      {name:"헤비 (300건↑)",  users:622,  count:340376, c:"linear-gradient(90deg,#8a6a2c,#a8863c)"}
+    ],
+    intensityNote: "300건 이상 <b>헤비 유저 622명(10.4%)</b>이 <b>340,376건</b> 사용 (전체 사용량의 <b>49.0%</b>). 소수 핵심층에 활용이 집중되어 있습니다.",
+    questionTop: [
+      {name:"문서·이메일 작성", v:7796, pct:"16.7"}, {name:"용어·개념 설명", v:7138, pct:"15.3"},
+      {name:"설계·시공·기술", v:5318, pct:"11.4"}, {name:"번역", v:3490, pct:"7.5"},
+      {name:"규정·계약·법무", v:1024, pct:"2.2"}
+    ],
+    /* ===== ⑤ 사용자 이동(리텐션) — 8월 전용 ===== */
+    retention: {
+      prevMonth: "7월", curMonth: "8월",
+      prevUsers: 5587, curUsers: 5966,
+      retained: 4963, newUsers: 1003, churned: 624,
+      retentionRate: "88.8", churnRate: "11.2", newRate: "16.8", netAdd: 379,
+      retUsage: 671875, newUsage: 22918, retUsagePct: "96.7", newUsagePct: "3.3",
+      retAvg: "135.4", newAvg: "22.8",
+      retGrew: 2823, retGrewPct: "56.9", retFell: 2038, retSame: 102,
+      retPrevSum: 569500, retCurSum: 671875,
+      churnAvg: "15.7", churnMedian: 4, churnLightPct: "72.8",
+      note: "지속 사용자 <b>4,963명(리텐션 88.8%)</b>이 8월 전체 사용량의 <b>96.7%</b>를 창출(인당 135.4건)하며 성장을 견인. 지속 사용자의 <b>56.9%(2,823명)</b>가 전월보다 사용량이 늘어 활용 강도 자체가 상승했습니다. 이탈 624명은 대부분 <b>7월 라이트 유저(중앙값 4건·10건 미만 72.8%)</b>로, 핵심층 이탈이 아닌 초기 미정착 성격이 강합니다."
+    }
+  }
+
+  /* ───────────────────────────────────────────────────────────────────
+     ▼▼▼ 새 보고월 추가용 빈 템플릿 (복사해서 위 "2026-08" 다음에 붙여넣고 값만 교체) ▼▼▼
+    ,"2026-09": {
+      label: "2026년 9월",
+      summary: ["첫째 핵심요약...", "둘째 핵심요약..."],
+      kpi: { totalUsage:0, avgPerPerson:"0", totalUsers:0, activeUsers:0,
+             haiQueries:0, haiDaily:0, copilotUsage:0, copilotDaily:0,
+             cost:"0", costDelta:"0", powerUsers:0, powerUserPct:"0" },
+      toolShare: { copilot:{pct:0,count:0}, hai:{pct:0,count:0} },
+      venn: { copilotTotal:0, haiTotal:0, copilotOnly:0, both:0, haiOnly:0, totalUsers:0 },
+      costTrend: [ {month:"7월",chat:0,doctrans:0,minutes:0,total:0}, {month:"8월",chat:0,doctrans:0,minutes:0,total:0}, {month:"9월",chat:0,doctrans:0,minutes:0,total:0} ],
+      dept: [ {name:"토목",head:0,uPrev:0,uCur:0,gPrev:0,gCur:0,aPrev:"0",aCur:"0",delta:"+0"} ],
+      deptTotal: {name:"합계",head:0,uPrev:0,uCur:0,gPrev:0,gCur:0,aPrev:"0",aCur:"0",delta:"+0"},
+      deptNote: "· ...",
+      serviceTypes: { total:0, rows:[ {name:"일반 챗봇",pct:"0",segs:[{w:0,c:'#25517d'}]} ], note:"..." },
+      agentTop: [ {name:"번역 전문가",v:0} ],
+      agentNote: "...",
+      haiDailyLabel: "9", haiDailyPeak:{day:"9/1",value:0}, haiDaily:[0,0,0],
+      haiDailyNote: "...",
+      intensity: [ {name:"비활성 (1~9건)",users:0,count:0,c:"#c2cdd8"} ],
+      intensityNote: "...",
+      questionTop: [ {name:"번역",v:0,pct:"0"} ],
+      // retention 은 선택 항목 — 필요 시 아래 주석 해제
+      // retention: { prevMonth:"8월", curMonth:"9월", prevUsers:0, curUsers:0, retained:0, newUsers:0, churned:0,
+      //   retentionRate:"0", churnRate:"0", newRate:"0", netAdd:0, retUsage:0, newUsage:0, retUsagePct:"0", newUsagePct:"0",
+      //   retAvg:"0", newAvg:"0", retGrew:0, retGrewPct:"0", retFell:0, retSame:0, retPrevSum:0, retCurSum:0,
+      //   churnAvg:"0", churnMedian:0, churnLightPct:"0", note:"..." }
+    }
+     ▲▲▲ 여기까지 ▲▲▲
+     ※ 비용 추이는 채팅·문서번역·회의록작성 3구분(chat/doctrans/minutes)으로 입력하세요.
+  ──────────────────────────────────────────────────────────────── */
+};
+
+/* ===== 유틸 ===== */
+const nf = n => Number(n).toLocaleString('ko-KR');
+const $  = (t,a={},h='') => { const e=document.createElement(t); for(const k in a) e.setAttribute(k,a[k]); if(h) e.innerHTML=h; return e; };
+
+/* ===== 비용 추이 구분 정의 (채팅 · 문서번역 · 회의록작성) ===== */
+const COST_SEGS = [
+  {key:"chat",     label:"채팅",       color:"#25517d"},
+  {key:"doctrans", label:"문서번역",   color:"#c1a15a"},
+  {key:"minutes",  label:"회의록작성", color:"#e0607a"}
+];
+
+/* ===== 파이 차트(도구별 비중) ===== */
+function pieChart(share){
+  const cx=60,cy=60,r=50;
+  const cop=share.copilot.pct, hai=share.hai.pct;
+  const p2c=(deg)=>{const a=(deg-90)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)];};
+  const arc=(s,e)=>{const [sx,sy]=p2c(s),[ex,ey]=p2c(e); const large=(e-s)>180?1:0;
+    return `M${cx},${cy} L${sx},${sy} A${r},${r} 0 ${large} 1 ${ex},${ey} Z`;};
+  const copEnd = cop/100*360;
+  return `<svg height="164" style="flex:0 1 164px; max-width:164px; min-width:110px; height:auto;" viewbox="0 0 120 120" width="164">
+    <path d="${arc(0,copEnd)}" fill="#c1a15a"></path>
+    <path d="${arc(copEnd,360)}" fill="#25517d"></path>
+    <text fill="#fff" font-size="14" font-weight="800" text-anchor="middle" x="66" y="74">${cop}%</text>
+  </svg>`;
+}
+
+/* ===== 벤 다이어그램(플랫폼 이용 구조) ===== */
+function vennChart(v){
+  return `<svg height="190" style="display:block; margin:0 auto; width:100% !important; max-width:440px !important; height:auto !important;" viewbox="0 0 440 195" width="100%">
+    <text fill="#25517d" font-size="13.5" font-weight="800" text-anchor="middle" x="130" y="20">코파일럿</text>
+    <text fill="#25517d" font-size="12" text-anchor="middle" x="130" y="37">(${nf(v.copilotTotal)})</text>
+    <text fill="#d9536f" font-size="13.5" font-weight="800" text-anchor="middle" x="310" y="20">HAI</text>
+    <text fill="#d9536f" font-size="12" text-anchor="middle" x="310" y="37">(${nf(v.haiTotal)})</text>
+    <circle cx="175" cy="115" fill="rgba(37,81,125,.05)" r="78" stroke="#4a7bb0" stroke-width="1.8"></circle>
+    <circle cx="265" cy="115" fill="rgba(217,83,111,.05)" r="78" stroke="#d9536f" stroke-width="1.8"></circle>
+    <text fill="#20303f" font-size="16" font-weight="800" text-anchor="middle" x="140" y="121">${nf(v.copilotOnly)}</text>
+    <text fill="#20303f" font-size="16" font-weight="800" text-anchor="middle" x="220" y="121">${nf(v.both)}</text>
+    <text fill="#20303f" font-size="16" font-weight="800" text-anchor="middle" x="300" y="121">${nf(v.haiOnly)}</text>
+  </svg>`;
+}
+
+/* ===== 비용 추이(누적 막대) — 채팅·문서번역·회의록작성 3구분 ===== */
+function costChart(trend){
+  const maxTotal = Math.max(...trend.map(t=>t.total));
+  const base=248, topMax=205; const scale=topMax/maxTotal;
+  const n=trend.length;
+  const slot=180, x0=112, barW=96;
+  const xs=trend.map((t,i)=>x0+i*slot), lx=xs.map(x=>x+barW/2);
+  let bars='', labels='';
+  trend.forEach((t,i)=>{
+    let y=base;
+    COST_SEGS.forEach(sg=>{
+      const val=t[sg.key]||0;
+      const h=val*scale;
+      const yTop=y-h;
+      bars+=`<rect fill="${sg.color}" height="${Math.max(h,0.5).toFixed(1)}" rx="1.5" width="${barW}" x="${xs[i]}" y="${yTop.toFixed(1)}"></rect>`;
+      y=yTop;
+    });
+    labels+=`<text fill="#20303f" font-size="11" font-weight="800" text-anchor="middle" x="${lx[i]}" y="${(y-8).toFixed(1)}">${nf(t.total)}원</text>`;
+    labels+=`<text fill="#20303f" font-size="13" font-weight="700" text-anchor="middle" x="${lx[i]}" y="268">${t.month}</text>`;
+  });
+  return `<svg style="display:block;" viewbox="0 0 640 278" width="100%">
+    <line stroke="#c9d3dd" x1="40" x2="620" y1="248" y2="248"></line>
+    ${bars}${labels}
+  </svg>`;
+}
+
+/* ===== HAI 일별 추이(라인) ===== */
+function lineChart(d){
+  const arr=d.haiDaily, n=arr.length;
+  const x0=40,x1=985, yTop=20,yBase=180, vMax=3500;
+  const X=i=> n<=1? x0 : x0+(x1-x0)*i/(n-1);
+  const Y=v=> yBase-(v/vMax)*(yBase-yTop);
+  const pts=arr.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const area=`40,${yBase} ${pts} ${X(n-1).toFixed(1)},${yBase}`;
+  let peakMark='';
+  const pk=d.haiDailyPeak;
+  if(pk){ const mi=arr.indexOf(pk.value); const px=(mi>=0?X(mi):X(0)), py=Y(pk.value);
+    peakMark=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" fill="#c1a15a" r="3.5" stroke="#fff" stroke-width="1"></circle>
+      <text fill="#a8863c" font-size="10" font-weight="700" x="${(px+7).toFixed(1)}" y="${(py-3).toFixed(1)}">${pk.day} 최다 ${nf(pk.value)}건</text>`;
+  }
+  const m=d.haiDailyLabel;
+  const xt=(day)=>X(day-1);
+  return `<svg height="200" style="display:block;" viewbox="0 0 1000 220" width="100%">
+    <line stroke="#e2e8ef" x1="40" x2="40" y1="20" y2="180"></line>
+    <line stroke="#c9d3dd" x1="40" x2="985" y1="180" y2="180"></line>
+    <line stroke="#eef2f6" x1="40" x2="985" y1="20" y2="20"></line>
+    <line stroke="#eef2f6" x1="40" x2="985" y1="100" y2="100"></line>
+    <text fill="#9aa7b4" font-size="9" text-anchor="end" x="34" y="24">3,500</text>
+    <text fill="#9aa7b4" font-size="9" text-anchor="end" x="34" y="104">1,750</text>
+    <text fill="#9aa7b4" font-size="9" text-anchor="end" x="34" y="184">0</text>
+    <polyline fill="rgba(37,81,125,.10)" points="${area}" stroke="none"></polyline>
+    <polyline fill="none" points="${pts}" stroke="#25517d" stroke-width="2"></polyline>
+    ${peakMark}
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(1).toFixed(1)}" y="196">${m}/1</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(6).toFixed(1)}" y="196">${m}/6</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(11).toFixed(1)}" y="196">${m}/11</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(16).toFixed(1)}" y="196">${m}/16</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(21).toFixed(1)}" y="196">${m}/21</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${xt(26).toFixed(1)}" y="196">${m}/26</text>
+    <text fill="#63788c" font-size="8.5" text-anchor="middle" x="${X(n-1).toFixed(1)}" y="196">${m}/${n}</text>
+  </svg>`;
+}
+
+/* ===== 사용자 이동(리텐션) 플로우 차트 ===== */
+function retentionFlow(r){
+  // 좌: 전월 사용자(지속+이탈), 우: 당월 사용자(지속+신규)
+  const W=640, H=250, x0=90, x1=550, barW=90, top=30, bottom=210;
+  const maxU=Math.max(r.prevUsers, r.curUsers);
+  const scale=(bottom-top)/maxU;
+  const hPrev=r.prevUsers*scale, hCur=r.curUsers*scale;
+  // 전월 스택: 지속(아래) + 이탈(위)
+  const retH=r.retained*scale, churnH=r.churned*scale, newH=r.newUsers*scale;
+  const prevBottom=bottom, prevRetY=prevBottom-retH, prevChurnY=prevRetY-churnH;
+  const curBottom=bottom, curRetY=curBottom-retH, curNewY=curRetY-newH;
+  // 지속 연결 리본(사다리꼴)
+  const ribbon=`<path d="M${x0+barW},${prevRetY.toFixed(1)} L${x1},${curRetY.toFixed(1)} L${x1},${curBottom} L${x0+barW},${prevBottom} Z" fill="rgba(37,81,125,.12)"></path>`;
+  return `<svg viewbox="0 0 ${W} ${H}" width="100%" style="display:block; width:100% !important; max-width:600px !important; height:auto !important; margin:0 auto;">
+    ${ribbon}
+    <!-- 전월 막대 -->
+    <rect x="${x0}" y="${prevRetY.toFixed(1)}" width="${barW}" height="${retH.toFixed(1)}" fill="#25517d" rx="2"></rect>
+    <rect x="${x0}" y="${prevChurnY.toFixed(1)}" width="${barW}" height="${churnH.toFixed(1)}" fill="#8a97a5" rx="2"></rect>
+    <!-- 당월 막대 -->
+    <rect x="${x1}" y="${curRetY.toFixed(1)}" width="${barW}" height="${retH.toFixed(1)}" fill="#25517d" rx="2"></rect>
+    <rect x="${x1}" y="${curNewY.toFixed(1)}" width="${barW}" height="${newH.toFixed(1)}" fill="#c1a15a" rx="2"></rect>
+    <!-- 축 라벨 -->
+    <text x="${x0+barW/2}" y="${bottom+22}" text-anchor="middle" font-size="13" font-weight="800" fill="#20303f">${r.prevMonth} · ${nf(r.prevUsers)}명</text>
+    <text x="${x1+barW/2}" y="${bottom+22}" text-anchor="middle" font-size="13" font-weight="800" fill="#20303f">${r.curMonth} · ${nf(r.curUsers)}명</text>
+    <!-- 세그먼트 값 -->
+    <text x="${x0+barW/2}" y="${(prevRetY+retH/2+4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">지속 ${nf(r.retained)}</text>
+    <text x="${x0+barW/2}" y="${(prevChurnY+churnH/2+4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">이탈 ${nf(r.churned)}</text>
+    <text x="${x1+barW/2}" y="${(curRetY+retH/2+4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">지속 ${nf(r.retained)}</text>
+    <text x="${x1+barW/2}" y="${(curNewY+newH/2+4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">신규 ${nf(r.newUsers)}</text>
+    <!-- 리본 라벨 -->
+    <text x="${(x0+barW+x1)/2}" y="${((prevRetY+curRetY)/2-6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="#25517d">리텐션 ${r.retentionRate}%</text>
+  </svg>`;
+}
+
+/* ===== 전체 렌더 ===== */
+function renderReport(key){
+  const d=REPORTS[key];
+  if(!d) return;
+  const sel=document.getElementById('monthSelect');
+  if(sel.value!==key) sel.value=key;
+  updateNavButtons(key);
+
+  const k=d.kpi;
+  // 핵심 요약
+  const summaryHtml = `<div class="summary"><h2>핵심 요약</h2><ul>${d.summary.map(s=>`<li>${s}</li>`).join('')}</ul></div>`;
+
+  // KPI
+  const kpiHtml = `<div class="kpi-grid">
+    <div class="kpi"><div class="lbl">전사 총 활용량</div><div class="val">${nf(k.totalUsage)}<small>건</small></div><div class="sub">1인 평균 <b>${k.avgPerPerson}건</b> (전체 사용자 기준)</div></div>
+    <div class="kpi"><div class="lbl">전체 사용자 수</div><div class="val">${nf(k.totalUsers)}<small>명</small></div><div class="sub">활성(10건+) <b>${nf(k.activeUsers)}명</b></div></div>
+    <div class="kpi"><div class="lbl">HAI 질의</div><div class="val">${nf(k.haiQueries)}<small>건</small></div><div class="sub">일평균 <b>${nf(k.haiDaily)}건</b></div></div>
+    <div class="kpi"><div class="lbl">Copilot 활용</div><div class="val">${nf(k.copilotUsage)}<small>건</small></div><div class="sub">일평균 <b>${nf(k.copilotDaily)}건</b></div></div>
+    <div class="kpi"><div class="lbl">AI 서비스 비용</div><div class="val">${k.cost}<small>백만원</small></div><div class="sub">전월 대비 <b>${k.costDelta}백만원 증가</b></div></div>
+    <div class="kpi"><div class="lbl">파워유저 (100건↑)</div><div class="val">${nf(k.powerUsers)}<small>명</small></div><div class="sub">전체 사용자의 <b>${k.powerUserPct}%</b></div></div>
+  </div>`;
+
+  // Section 1
+  const legendItem=(c,nm,cnt)=>`<div style="display:flex; align-items:center; gap:9px;"><span class="dot" style="background:${c}; width:13px; height:13px;"></span><div><div style="font-weight:800; color:var(--navy); font-size:13.5px;">${nm}</div><div style="font-size:11.5px; color:var(--muted);">${nf(cnt)}건</div></div></div>`;
+  const costHead = `<tr><th style="text-align:left; padding-left:14px;">구분</th>${COST_SEGS.map(sg=>`<th>${sg.label}</th>`).join('')}<th>합계</th></tr>`;
+  const costRows=d.costTrend.map(t=>`<tr><td class="nm">${t.month}</td>${COST_SEGS.map(sg=>`<td class="num">${nf(t[sg.key]||0)}</td>`).join('')}<td class="num"><b>${nf(t.total)}</b></td></tr>`).join('');
+  const costLegend = COST_SEGS.map(sg=>`<span><i class="dot" style="background:${sg.color};"></i>${sg.label}</span>`).join('');
+  const sec1=`<div class="section">
+    <div class="sec-title"><span class="sec-num">1</span>전사 활용 현황 개요</div>
+    <div class="sec-desc">도구별 활용 비중과 플랫폼 이용 구조(HAI · Copilot · 병행)</div>
+    <div class="cols">
+      <div>
+        <div class="subhead">도구별 활용 비중</div>
+        <div style="display:flex; align-items:center; gap:26px; margin:12px 0 6px; flex-wrap:wrap;">
+          ${pieChart(d.toolShare)}
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            ${legendItem('#c1a15a','Copilot &nbsp;'+d.toolShare.copilot.pct+'%',d.toolShare.copilot.count)}
+            ${legendItem('#25517d','HAI &nbsp;'+d.toolShare.hai.pct+'%',d.toolShare.hai.count)}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="subhead">플랫폼 이용 구조 (이용자 ${nf(d.venn.totalUsers)}명)</div>
+        <div class="venn-wrap">${vennChart(d.venn)}</div>
+      </div>
+    </div>
+    <div class="subhead" style="margin-top:24px;">토큰 비용 추이 (최근 3개월)</div>
+    <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:24px; align-items:center;">
+      <div>
+        ${costChart(d.costTrend)}
+        <div class="legend" style="justify-content:center; margin-top:2px;">
+          ${costLegend}
+        </div>
+      </div>
+      <div>
+        <table style="margin-top:0;">
+          <thead>${costHead}</thead>
+          <tbody>${costRows}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+
+  // Section 2 (본부별)
+  const deptRow=(r,cls='')=>`<tr class="${cls}"><td class="nm">${r.name}</td><td class="num group-end">${nf(r.head)}</td><td class="num">${nf(r.uPrev)}</td><td class="num group-end">${nf(r.uCur)}</td><td class="num">${nf(r.gPrev)}</td><td class="num group-end">${nf(r.gCur)}</td><td class="num">${r.aPrev}</td><td class="num group-end">${r.aCur}</td><td class="num ${r.delta.startsWith('-')?'delta-down':'delta-up'}">${r.delta}</td></tr>`;
+  const deptRows=d.dept.map(r=>deptRow(r, r.hl?'hl':'')).join('') + deptRow(d.deptTotal,'total-row');
+  const sec2=`<div class="section">
+    <div class="sec-title"><span class="sec-num">2</span>본부별 활용 현황</div>
+    <div class="sec-desc">9개 부문 구분 · 사용자 수, 총 사용량 및 인당 평균 사용량의 <b>전월 대비 변화</b> 비교</div>
+    <table><thead>
+      <tr><th rowspan="2" style="text-align:left;padding-left:14px;">구분</th><th class="group-end" rowspan="2">본부 인원</th><th class="group-end" colspan="2">사용자 수</th><th class="group-end" colspan="2">총 사용량</th><th class="group-end" colspan="2">인당 평균 사용량</th><th rowspan="2">증감</th></tr>
+      <tr class="subhead-row"><th>전월</th><th class="group-end">당월</th><th>전월</th><th class="group-end">당월</th><th>전월</th><th class="group-end">당월</th></tr>
+    </thead><tbody>${deptRows}</tbody></table>
+    <p style="font-size:12px; color:var(--muted); margin-top:12px; line-height:1.6;">· <b style="color:var(--navy3)">사용자 수</b> = 월 1건 이상 실제 사용 인원, <b style="color:var(--navy3)">인당 평균 사용량</b> = 총 사용량 ÷ 본부 인원, <b style="color:var(--navy3)">증감</b> = 당월 인당 평균 − 전월 인당 평균.<br/>${d.deptNote}<br/>· <b style="color:var(--navy3)">기타</b>는 글로벌·연구원·소규모 조직 및 사번·본부 미상 인원을 통합한 구분입니다.</p>
+  </div>`;
+
+  // Section 3
+  const st=d.serviceTypes;
+  const svcRows=st.rows.map(r=>`<div class="svc-row"><div class="svc-top"><span class="svc-nm">${r.name}</span><span class="svc-pct">${r.pct}%</span></div><div class="svc-track">${r.segs.map(s=>`<div class="svc-seg" style="width:${s.w}%; background:${s.c};"></div>`).join('')}</div></div>`).join('');
+  const agMax=Math.max(...d.agentTop.map(a=>a.v));
+  const agRows=d.agentTop.map(a=>`<div class="barrow"><div class="nm">${a.name}</div><div class="track"><div class="fill" style="width:${(a.v/agMax*100).toFixed(1)}%;"></div></div><div class="vv">${nf(a.v)}</div></div>`).join('');
+  const sec3=`<div class="section">
+    <div class="sec-title"><span class="sec-num">3</span>AI 서비스 유형별 활용 분석</div>
+    <div class="sec-desc">전사 서비스 유형별 사용 비중과 HAI 업무 특화 비서 · 일별 질의 추이</div>
+    <div class="cols" style="margin-bottom:22px;">
+      <div>
+        <div class="subhead">서비스 유형별 사용 비중 (전사 ${nf(st.total)}건)</div>
+        <div class="svc-legend"><span><i class="dot" style="background:#25517d;"></i>코파일럿</span><span><i class="dot" style="background:#e0607a;"></i>HAI</span></div>
+        <div class="svc-bars">${svcRows}</div>
+        <p style="font-size:12px; color:var(--muted); margin-top:14px; line-height:1.7;">${st.note}</p>
+      </div>
+      <div>
+        <div class="subhead">HAI 업무 특화 비서(Agent) 활용 Top ${d.agentTop.length}</div>
+        <div class="barlist">${agRows}</div>
+        <p style="font-size:12px; color:var(--muted); margin-top:12px; line-height:1.55;">${d.agentNote}</p>
+      </div>
+    </div>
+    <div class="subhead">HAI 일별 질의 추이</div>
+    ${lineChart(d)}
+    <p style="font-size:12px; color:var(--muted); margin-top:8px; line-height:1.55;">${d.haiDailyNote}</p>
+  </div>`;
+
+  // Section 4
+  const inMax=Math.max(...d.intensity.map(i=>i.users));
+  const inRows=d.intensity.map(i=>`<div class="barrow" style="grid-template-columns:118px 1fr 150px;"><div class="nm">${i.name}</div><div class="track"><div class="fill" style="width:${(i.users/inMax*100).toFixed(1)}%;${i.c?'background:'+i.c+';':''}"></div></div><div class="vv">${nf(i.users)}명 <em style="font-style:normal;color:#8a97a5;font-weight:600;">(${nf(i.count)}건)</em></div></div>`).join('');
+  const qMax=Math.max(...d.questionTop.map(q=>q.v));
+  const qRows=d.questionTop.map((q,i)=>`<div class="qrow"><span class="qn">${i+1}</span><span class="qnm">${q.name}</span><div class="qtrack"><div class="qfill" style="width:${(q.v/qMax*100).toFixed(1)}%;"></div></div><span class="qv">${nf(q.v)}<em>${q.pct}%</em></span></div>`).join('');
+  const qTotal=d.kpi.haiQueries;
+  const sec4=`<div class="section">
+    <div class="sec-title"><span class="sec-num">4</span>질문 유형 및 활용 강도 분석</div>
+    <div class="sec-desc">사용자 활용 강도 분포와 HAI 질문 유형 Top 5 (질문 열 기반)</div>
+    <div class="cols">
+      <div>
+        <div class="subhead">사용자 활용 강도 분포 (HAI + Copilot)</div>
+        <div class="barlist">${inRows}</div>
+        <p style="font-size:12px; color:var(--muted); margin-top:12px; line-height:1.55;">${d.intensityNote}</p>
+      </div>
+      <div>
+        <div class="subhead">HAI 질문 유형 Top 5 (질의 ${nf(qTotal)}건)</div>
+        <div class="qrank">${qRows}</div>
+        <p style="font-size:11px; color:var(--muted); margin-top:10px; line-height:1.5;">질문 텍스트의 키워드 기반 자동 분류(1건=1유형). 용어설명·번역·문서작성 등 <b style="color:var(--navy3)">반복·조회성 업무</b>가 상위권을 형성합니다.</p>
+      </div>
+    </div>
+  </div>`;
+
+  // Section 5 (사용자 이동/리텐션) — retention 데이터가 있을 때만
+  let sec5='';
+  if(d.retention){
+    const r=d.retention;
+    sec5=`<div class="section">
+      <div class="sec-title"><span class="sec-num">5</span>사용자 이동 분석 (전월 대비)</div>
+      <div class="sec-desc">${r.prevMonth} → ${r.curMonth} 사용자 <b>지속 · 신규 · 이탈</b> 및 리텐션 구조 (사번 기준 매칭)</div>
+      <div class="ret-kpi">
+        <div class="ret-card ret"><div class="rc-lbl">지속 사용자 (Retained)</div><div class="rc-val">${nf(r.retained)}<small>명</small></div><div class="rc-sub">리텐션율 <b>${r.retentionRate}%</b> · 8월 사용량의 ${r.retUsagePct}% 창출</div></div>
+        <div class="ret-card new"><div class="rc-lbl">신규 유입 (New)</div><div class="rc-val">${nf(r.newUsers)}<small>명</small></div><div class="rc-sub">유입율 <b>${r.newRate}%</b> · 인당 평균 ${r.newAvg}건</div></div>
+        <div class="ret-card churn"><div class="rc-lbl">이탈 (Churned)</div><div class="rc-val">${nf(r.churned)}<small>명</small></div><div class="rc-sub">이탈율 <b>${r.churnRate}%</b> · 7월 중앙값 ${r.churnMedian}건</div></div>
+      </div>
+      <div class="cols" style="margin-top:20px; align-items:center;">
+        <div>
+          <div class="subhead">사용자 이동 흐름 (순증 +${nf(r.netAdd)}명)</div>
+          ${retentionFlow(r)}
+          <div class="legend" style="justify-content:center; margin-top:6px;">
+            <span><i class="dot" style="background:#25517d;"></i>지속</span>
+            <span><i class="dot" style="background:#c1a15a;"></i>신규</span>
+            <span><i class="dot" style="background:#8a97a5;"></i>이탈</span>
+          </div>
+        </div>
+        <div>
+          <div class="subhead">지속 사용자 활용 심화</div>
+          <table style="margin-top:0;">
+            <thead><tr><th style="text-align:left; padding-left:14px;">구분</th><th>${r.prevMonth}</th><th>${r.curMonth}</th></tr></thead>
+            <tbody>
+              <tr><td class="nm">지속 사용자 총 사용량</td><td class="num">${nf(r.retPrevSum)}</td><td class="num"><b>${nf(r.retCurSum)}</b></td></tr>
+              <tr><td class="nm">사용량 증가 인원</td><td class="num" colspan="2"><b>${nf(r.retGrew)}명</b> (${r.retGrewPct}%)</td></tr>
+              <tr><td class="nm">사용량 감소 / 동일</td><td class="num" colspan="2">${nf(r.retFell)}명 / ${nf(r.retSame)}명</td></tr>
+              <tr><td class="nm">지속 사용자 인당 평균(${r.curMonth})</td><td class="num" colspan="2"><b>${r.retAvg}건</b></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:11.5px; color:var(--muted); margin-top:10px; line-height:1.55;">· 이탈 ${nf(r.churned)}명 중 <b style="color:var(--navy3)">7월 사용량 10건 미만(라이트)</b> 비중 ${r.churnLightPct}% — 초기 미정착 성격.</p>
+        </div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:14px; line-height:1.7;">${r.note}</p>
+    </div>`;
+  }
+
+  // Footnote
+  const retFoot = d.retention ? `<br/>사용자 이동 분석 : ${d.retention.prevMonth}·${d.retention.curMonth} 사번 리스트를 대조하여 지속(양월 모두 사용)·신규(당월만)·이탈(전월만)로 분류. 리텐션율 = 지속 ÷ 전월 사용자.` : '';
+  const foot=`<div class="footnote"><b>[데이터 출처]</b> HAI 사용로그(${nf(d.kpi.haiQueries)}건) · 전사 통합 사용량(HAI+Copilot, 전체 사용자 ${nf(d.kpi.totalUsers)}명) · 본부 정원(${nf(d.deptTotal.head)}명)  |  <b>[집계 기준]</b> 활성 사용자 = 월 총 사용량 10건 이상 / 활용량 = 질의·요청 건수  |  본부별 인당 평균은 본부 정원 대비 산정하며, 증감은 당월 인당 평균에서 전월 인당 평균을 차감.<br/>서비스 유형 : 일반 챗봇(Copilot 전체 + HAI 일반챗봇) · 사내 업무(HAI 지정 특화 비서군) · 나만의 비서(그 외 HAI 사용자 비서).<br/>질문 유형 Top 5는 HAI 질문 열의 키워드 기반 자동 분류 결과이며, 본 자료는 시스템 로그 기반 정량 집계로 정성 분석은 별도 검토가 필요합니다.${retFoot}  &copy; 현대건설 AX플랫폼팀</div>`;
+
+  document.getElementById('report-root').innerHTML = summaryHtml + kpiHtml + sec1 + sec2 + sec3 + sec4 + sec5 + foot;
+}
+
+/* ===== 월 이동 버튼 ===== */
+function sortedKeys(){ return Object.keys(REPORTS).sort().reverse(); } // 최신월이 먼저
+function updateNavButtons(key){
+  const keys=sortedKeys(); const i=keys.indexOf(key);
+  document.getElementById('nextBtn').disabled = (i<=0);        // 더 최신 없음
+  document.getElementById('prevBtn').disabled = (i>=keys.length-1); // 더 과거 없음
+}
+function stepMonth(dir){ // dir=+1 이전달, -1 다음달
+  const keys=sortedKeys(); const cur=document.getElementById('monthSelect').value;
+  let i=keys.indexOf(cur)+dir;
+  if(i<0||i>=keys.length) return;
+  renderReport(keys[i]);
+}
+
+/* ===== 초기화: 드롭다운 채우고 최신월 표시 ===== */
+(function init(){
+  const sel=document.getElementById('monthSelect');
+  const keys=sortedKeys();
+  keys.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=REPORTS[k].label; sel.appendChild(o); });
+  renderReport(keys[0]);
+})();
+</script>
+</body>
+</html>
